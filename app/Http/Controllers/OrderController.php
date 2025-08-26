@@ -39,7 +39,7 @@ class OrderController extends Controller
             // Create the order
             $order = auth()->user()->orders()->create([
                 'status' => Order::STATUS_PENDING,
-                'price' => 0, // Will be calculated after items are added
+                'price' => 0, 
             ]);
 
             $totalPrice = 0;
