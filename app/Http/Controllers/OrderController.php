@@ -18,7 +18,7 @@ class OrderController extends Controller
             ->with(['orderItems.product'])
             ->latest()
             ->get();
-            
+
         return response()->json($orders);
     }
 
@@ -47,21 +47,20 @@ class OrderController extends Controller
             // Create order items
             foreach ($validated['items'] as $item) {
                 $product = Product::find($item['product_id']);
-                
-                if (!$product) {
-                    throw new \Exception("Product not found");
+
+                if (! $product) {
+                    throw new \Exception('Product not found');
                 }
 
                 $orderItem = $order->orderItems()->create([
                     'product_id' => $product->id,
                     'quantity' => $item['quantity'],
-                    'price' => $product->price, // Snapshot the current price
+                    'price' => $product->price,
                 ]);
 
                 $totalPrice += $orderItem->subtotal;
             }
 
-            // Update order total
             $order->update(['price' => $totalPrice]);
 
             DB::commit();
@@ -70,7 +69,8 @@ class OrderController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['message' => 'Failed to create order: ' . $e->getMessage()], 500);
+
+            return response()->json(['message' => 'Failed to create order: '.$e->getMessage()], 500);
         }
     }
 
@@ -79,7 +79,6 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        // Check if user owns this order
         if ($order->user_id !== auth()->id()) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
@@ -92,13 +91,12 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order)
     {
-        // Check if user owns this order
         if ($order->user_id !== auth()->id()) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         $validated = $request->validate([
-            'status' => 'required|in:pending,paid,shipped,completed,cancelled'
+            'status' => 'required|in:pending,paid,shipped,completed,cancelled',
         ]);
 
         $order->update($validated);
@@ -114,29 +112,28 @@ class OrderController extends Controller
         return $this->index();
     }
 
-     /**
+    /**
      * Get orders that contain products from the authenticated supplier
      */
     public function supplierOrders()
     {
         $supplierId = auth()->id();
-        
-        // Get orders that have at least one item with a product owned by this supplier
+
         $orders = Order::whereHas('orderItems.product', function ($query) use ($supplierId) {
             $query->where('user_id', $supplierId);
         })
-        ->with([
-            'user:id,name,email', // Customer info
-            'orderItems' => function ($query) use ($supplierId) {
-                // Only load order items that belong to this supplier's products
-                $query->whereHas('product', function ($q) use ($supplierId) {
-                    $q->where('user_id', $supplierId);
-                });
-            },
-            'orderItems.product'
-        ])
-        ->latest()
-        ->get();
+            ->with([
+                'user:id,name,email', // Customer info
+                'orderItems' => function ($query) use ($supplierId) {
+                    // Only load order items that belong to this supplier's products
+                    $query->whereHas('product', function ($q) use ($supplierId) {
+                        $q->where('user_id', $supplierId);
+                    });
+                },
+                'orderItems.product',
+            ])
+            ->latest()
+            ->get();
 
         return response()->json($orders);
     }

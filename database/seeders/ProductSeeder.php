@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Product;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class ProductSeeder extends Seeder
@@ -35,11 +34,11 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Premium Padel Gear',
                 'email' => 'support@premiumpadel.com',
-            ]
+            ],
         ];
 
         $supplierUsers = [];
-        
+
         // Create supplier users
         foreach ($suppliers as $supplierData) {
             $supplier = User::firstOrCreate(
@@ -56,7 +55,7 @@ class ProductSeeder extends Seeder
         // Create additional random products distributed among suppliers
         for ($i = 0; $i < 15; $i++) {
             $supplier = $supplierUsers[$i % count($supplierUsers)];
-            
+
             Product::factory()->create([
                 'user_id' => $supplier->id,
             ]);

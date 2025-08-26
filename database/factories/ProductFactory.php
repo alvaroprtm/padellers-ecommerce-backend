@@ -27,7 +27,7 @@ class ProductFactory extends Factory
             'Star Vie Raptor Pro',
             'Prince Warrior Pro',
             'Dunlop Inferno Elite',
-            'Black Crown Piton Attack'
+            'Black Crown Piton Attack',
         ];
 
         $name = $this->faker->randomElement($padelRacketNames);
@@ -37,7 +37,7 @@ class ProductFactory extends Factory
             'name' => $name,
             'description' => $this->faker->text(),
             'price' => $this->faker->randomFloat(2, 89.99, 399.99),
-            'image_url' => 'https://via.placeholder.com/400x600/007bff/ffffff?text=' . urlencode($name),
+            'image_url' => 'https://via.placeholder.com/400x600/007bff/ffffff?text='.urlencode($name),
         ];
     }
 }

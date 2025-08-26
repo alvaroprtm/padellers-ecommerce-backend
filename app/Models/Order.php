@@ -23,9 +23,13 @@ class Order extends Model
     ];
 
     const STATUS_PENDING = 'pending';
+
     const STATUS_PAID = 'paid';
+
     const STATUS_SHIPPED = 'shipped';
+
     const STATUS_COMPLETED = 'completed';
+
     const STATUS_CANCELLED = 'cancelled';
 
     public function user(): BelongsTo
@@ -40,8 +44,8 @@ class Order extends Model
 
     public function getTotalOrders()
     {
-        return $this->orderItems->sum(function ($item){
-            return  $item->price * $item->quantity;
+        return $this->orderItems->sum(function ($item) {
+            return $item->price * $item->quantity;
         });
     }
 }

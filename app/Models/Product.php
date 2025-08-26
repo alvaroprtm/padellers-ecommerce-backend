@@ -17,11 +17,11 @@ class Product extends Model
         'name',
         'description',
         'price',
-        'image_url'
+        'image_url',
     ];
 
     protected $casts = [
-        'price' => 'decimal:2'
+        'price' => 'decimal:2',
     ];
 
     /**

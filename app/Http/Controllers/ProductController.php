@@ -13,6 +13,7 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::with('user:id,name')->latest()->get();
+
         return response()->json($products);
     }
 
@@ -33,10 +34,11 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'image_url' => 'nullable|url'
+            'image_url' => 'nullable|url',
         ]);
 
         $product = auth()->user()->products()->create($validated);
+
         return response()->json($product->load('user:id,name'), 201);
     }
 
@@ -54,10 +56,11 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'image_url' => 'nullable|url'
+            'image_url' => 'nullable|url',
         ]);
 
         $product->update($validated);
+
         return response()->json($product->load('user:id,name'));
     }
 
@@ -72,6 +75,7 @@ class ProductController extends Controller
         }
 
         $product->delete();
+
         return response()->json(['message' => 'Product deleted successfully']);
     }
 
@@ -81,6 +85,7 @@ class ProductController extends Controller
     public function supplierProducts()
     {
         $products = auth()->user()->products()->latest()->get();
+
         return response()->json($products);
     }
 }
