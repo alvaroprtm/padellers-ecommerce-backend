@@ -83,7 +83,8 @@ This is the backend API for an e-commerce platform with two main user types:
 ### Installation Steps
 
 1. **Clone the repository**
-   ```bash artisan key:generate
+   ```bash
+   artisan key:generate
    ```
 
 4. **Database configuration**
