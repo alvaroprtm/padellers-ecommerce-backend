@@ -24,6 +24,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'product.edit',
             'product.create',
             'product.delete',
+            'product.order.view',
             'order.view',
             'order.edit',
             'order.create',
@@ -47,7 +48,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'product.create',
             'product.edit',
             'product.delete',
-            'order.view',
+            'product.order.view'
         ]);
 
         $roleInstances['user']->givePermissionTo([

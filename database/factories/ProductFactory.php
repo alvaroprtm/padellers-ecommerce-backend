@@ -37,7 +37,7 @@ class ProductFactory extends Factory
             'name' => $name,
             'description' => $this->faker->text(),
             'price' => $this->faker->randomFloat(2, 89.99, 399.99),
-            'image_url' => 'https://via.placeholder.com/400x600/007bff/ffffff?text='.urlencode($name),
+            'image_url' => 'https://placehold.co/400x600/007bff/ffffff?text='.urlencode($name),
         ];
     }
 }

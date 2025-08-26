@@ -4,16 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ProductController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of products
      */
     public function index()
     {
         $products = Product::with('user:id,name')->latest()->get();
-
         return response()->json($products);
     }
 
@@ -26,10 +28,12 @@ class ProductController extends Controller
     }
 
     /**
-     * Store a new product (for authenticated users)
+     * Store a new product (for authenticated users with permission)
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Product::class);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -38,19 +42,15 @@ class ProductController extends Controller
         ]);
 
         $product = auth()->user()->products()->create($validated);
-
         return response()->json($product->load('user:id,name'), 201);
     }
 
     /**
-     * Update product (only owner can update)
+     * Update product (check ownership OR edit permission)
      */
     public function update(Request $request, Product $product)
     {
-        // Check if user owns this product
-        if ($product->user_id !== auth()->id()) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $this->authorize('update', $product);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -60,22 +60,17 @@ class ProductController extends Controller
         ]);
 
         $product->update($validated);
-
         return response()->json($product->load('user:id,name'));
     }
 
     /**
-     * Delete product (only owner can delete)
+     * Delete product (check ownership OR delete permission)
      */
     public function destroy(Product $product)
     {
-        // Check if user owns this product
-        if ($product->user_id !== auth()->id()) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $this->authorize('delete', $product);
 
         $product->delete();
-
         return response()->json(['message' => 'Product deleted successfully']);
     }
 
@@ -84,8 +79,9 @@ class ProductController extends Controller
      */
     public function supplierProducts()
     {
-        $products = auth()->user()->products()->latest()->get();
+        $this->authorize('viewOwned', Product::class);
 
+        $products = auth()->user()->products()->latest()->get();
         return response()->json($products);
     }
 }

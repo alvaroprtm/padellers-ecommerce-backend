@@ -10,7 +10,11 @@ use Illuminate\Support\Facades\Route;
 // User-related routes
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', function (Request $request) {
-        return $request->user()->load('roles');
+        $user = $request->user()->load('roles');
+        return response()->json([
+            'user' => $user,
+            'roles' => $user->getRoleNames(),
+        ]);
     });
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
@@ -30,9 +34,11 @@ Route::middleware(['guest', 'web'])->group(function () {
 
 // Product-related routes
 Route::prefix('products')->group(function () {
+    // Public routes
     Route::get('/', [ProductController::class, 'index']);
     Route::get('/{product}', [ProductController::class, 'show']);
 
+    // Protected routes (policies handle authorization)
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/', [ProductController::class, 'store']);
         Route::patch('/{product}', [ProductController::class, 'update']);
@@ -50,10 +56,6 @@ Route::prefix('orders')->group(function () {
         Route::delete('/{order}', [OrderController::class, 'destroy']);
     });
 });
-
-// Checkout route
-Route::middleware(['auth:sanctum'])
-    ->post('/checkout', [OrderController::class, 'checkout']);
 
 // Apply rate limiting to all routes
 Route::middleware('throttle:60,1')->group(function () {
