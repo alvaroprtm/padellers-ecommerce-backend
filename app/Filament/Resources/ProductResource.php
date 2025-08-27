@@ -14,7 +14,13 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-cube';
+
+    protected static ?string $navigationGroup = 'E-commerce';
+
+    protected static ?int $navigationSort = 2;
+
+    protected static ?string $navigationLabel = 'Products';
 
     public static function form(Form $form): Form
     {
@@ -37,8 +43,6 @@ class ProductResource extends Resource
                     ->image(),
             ]);
     }
-
-    // filament panel
 
     public static function table(Table $table): Table
     {

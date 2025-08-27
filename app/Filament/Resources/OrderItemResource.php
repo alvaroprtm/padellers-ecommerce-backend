@@ -14,7 +14,15 @@ class OrderItemResource extends Resource
 {
     protected static ?string $model = OrderItem::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
+
+    protected static ?string $navigationGroup = 'E-commerce';
+
+    protected static ?int $navigationSort = 3;
+
+    protected static ?string $navigationLabel = 'Order Items';
+
+    protected static ?string $pluralModelLabel = 'Order Line Items';
 
     public static function form(Form $form): Form
     {

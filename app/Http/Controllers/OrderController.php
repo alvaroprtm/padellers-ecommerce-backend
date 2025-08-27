@@ -42,7 +42,7 @@ class OrderController extends Controller
 
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Failed to create order: ' . $e->getMessage()
+                'message' => 'Failed to create order: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -75,12 +75,12 @@ class OrderController extends Controller
 
         } catch (\InvalidArgumentException $e) {
             return response()->json([
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 400);
 
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Failed to update order status: ' . $e->getMessage()
+                'message' => 'Failed to update order status: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -101,12 +101,12 @@ class OrderController extends Controller
 
         } catch (\InvalidArgumentException $e) {
             return response()->json([
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 400);
 
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Failed to cancel order: ' . $e->getMessage()
+                'message' => 'Failed to cancel order: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -133,7 +133,7 @@ class OrderController extends Controller
 
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Failed to retrieve supplier orders: ' . $e->getMessage()
+                'message' => 'Failed to retrieve supplier orders: '.$e->getMessage(),
             ], 500);
         }
     }

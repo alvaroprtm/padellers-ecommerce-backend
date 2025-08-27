@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\DB;
 
 class Order extends Model
 {
-    /** @use HasFactory<\Database\Factories\ProductFactory> */
     use HasFactory;
 
     protected $fillable = [
@@ -24,9 +23,13 @@ class Order extends Model
     ];
 
     const STATUS_PENDING = 'pending';
+
     const STATUS_PAID = 'paid';
+
     const STATUS_SHIPPED = 'shipped';
+
     const STATUS_COMPLETED = 'completed';
+
     const STATUS_CANCELLED = 'cancelled';
 
     public function user(): BelongsTo
@@ -64,7 +67,7 @@ class Order extends Model
     {
         foreach ($items as $item) {
             $product = Product::findOrFail($item['product_id']);
-            
+
             $this->orderItems()->create([
                 'product_id' => $product->id,
                 'quantity' => $item['quantity'],
@@ -108,7 +111,7 @@ class Order extends Model
      */
     public function cancel(): void
     {
-        if (!$this->canBeCancelled()) {
+        if (! $this->canBeCancelled()) {
             throw new \InvalidArgumentException('Only pending orders can be cancelled');
         }
 
@@ -125,11 +128,11 @@ class Order extends Model
             self::STATUS_PAID,
             self::STATUS_SHIPPED,
             self::STATUS_COMPLETED,
-            self::STATUS_CANCELLED
+            self::STATUS_CANCELLED,
         ];
 
-        if (!in_array($status, $validStatuses)) {
-            throw new \InvalidArgumentException("Invalid status: {$status}. Valid statuses are: " . implode(', ', $validStatuses));
+        if (! in_array($status, $validStatuses)) {
+            throw new \InvalidArgumentException("Invalid status: {$status}. Valid statuses are: ".implode(', ', $validStatuses));
         }
 
         $this->update(['status' => $status]);
@@ -154,16 +157,16 @@ class Order extends Model
         return self::whereHas('orderItems.product', function ($query) use ($supplier) {
             $query->where('user_id', $supplier->id);
         })
-        ->with([
-            'user:id,name,email',
-            'orderItems' => function ($query) use ($supplier) {
-                $query->whereHas('product', function ($q) use ($supplier) {
-                    $q->where('user_id', $supplier->id);
-                });
-            },
-            'orderItems.product',
-        ])
-        ->latest()
-        ->get();
+            ->with([
+                'user:id,name,email',
+                'orderItems' => function ($query) use ($supplier) {
+                    $query->whereHas('product', function ($q) use ($supplier) {
+                        $q->where('user_id', $supplier->id);
+                    });
+                },
+                'orderItems.product',
+            ])
+            ->latest()
+            ->get();
     }
 }
