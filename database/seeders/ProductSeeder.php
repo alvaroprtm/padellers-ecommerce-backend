@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class ProductSeeder extends Seeder
 {
@@ -13,7 +14,8 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create multiple suppliers
+        $supplierRole = Role::firstOrCreate(['name' => 'supplier']);
+
         $suppliers = [
             [
                 'name' => 'Padel Pro Store',
@@ -39,7 +41,6 @@ class ProductSeeder extends Seeder
 
         $supplierUsers = [];
 
-        // Create supplier users
         foreach ($suppliers as $supplierData) {
             $supplier = User::firstOrCreate(
                 ['email' => $supplierData['email']],
@@ -49,10 +50,14 @@ class ProductSeeder extends Seeder
                     'email_verified_at' => now(),
                 ]
             );
+
+            if (!$supplier->hasRole('supplier')) {
+                $supplier->assignRole($supplierRole);
+            }
+
             $supplierUsers[] = $supplier;
         }
 
-        // Create additional random products distributed among suppliers
         for ($i = 0; $i < 15; $i++) {
             $supplier = $supplierUsers[$i % count($supplierUsers)];
 

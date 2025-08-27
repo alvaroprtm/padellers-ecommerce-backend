@@ -30,13 +30,13 @@ class ProductFactory extends Factory
             'Black Crown Piton Attack',
         ];
 
-        $name = $this->faker->randomElement($padelRacketNames);
+        $name = fake()->randomElement($padelRacketNames);
 
         return [
             'user_id' => User::factory(),
             'name' => $name,
-            'description' => $this->faker->text(),
-            'price' => $this->faker->randomFloat(2, 89.99, 399.99),
+            'description' => fake()->text(200),
+            'price' => fake()->randomFloat(2, 89.99, 399.99),
             'image_url' => 'https://placehold.co/400x600/007bff/ffffff?text='.urlencode($name),
         ];
     }

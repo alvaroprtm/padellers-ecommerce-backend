@@ -1,0 +1,48 @@
+name: padellers-api
+services:
+- name: api
+  source_dir: /
+  github:
+    repo: alvaroprtm/padellers-ecommerce-backend
+    branch: main
+  
+  # Build command
+  build_command: chmod +x build.sh && ./build.sh
+  
+  # Run command
+  run_command: php artisan serve --host=0.0.0.0 --port=8080
+  
+  environment_slug: php
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  
+  envs:
+  - key: APP_NAME
+    value: "Padellers API"
+  - key: APP_ENV
+    value: production
+  - key: APP_DEBUG
+    value: "false"
+  - key: DB_CONNECTION
+    value: sqlite
+  - key: DB_DATABASE
+    value: /var/www/html/database/database.sqlite
+  - key: DB_FOREIGN_KEYS
+    value: "true"
+  - key: CACHE_DRIVER
+    value: file
+  - key: SESSION_DRIVER
+    value: file
+  - key: QUEUE_CONNECTION
+    value: database
+  - key: LOG_LEVEL
+    value: error
+  - key: MAIL_MAILER
+    value: log
+  - key: MAIL_FROM_ADDRESS
+    value: "noreply@padellers.com"
+  - key: MAIL_FROM_NAME
+    value: "Padellers"
+    
+  routes:
+  - path: /
