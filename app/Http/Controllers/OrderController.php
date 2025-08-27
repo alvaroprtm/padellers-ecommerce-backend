@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\Product;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -19,10 +17,7 @@ class OrderController extends Controller
     {
         $this->authorize('viewAny', Order::class);
 
-        $orders = auth()->user()->orders()
-            ->with(['orderItems.product'])
-            ->latest()
-            ->get();
+        $orders = Order::getForUser(auth()->user());
 
         return response()->json($orders);
     }
@@ -41,42 +36,14 @@ class OrderController extends Controller
         ]);
 
         try {
-            DB::beginTransaction();
+            $order = Order::createFromItems(auth()->user(), $validated['items']);
 
-            // Create the order
-            $order = auth()->user()->orders()->create([
-                'status' => Order::STATUS_PENDING,
-                'price' => 0,
-            ]);
-
-            $totalPrice = 0;
-
-            foreach ($validated['items'] as $item) {
-                $product = Product::find($item['product_id']);
-
-                if (! $product) {
-                    throw new \Exception('Product not found');
-                }
-
-                $orderItem = $order->orderItems()->create([
-                    'product_id' => $product->id,
-                    'quantity' => $item['quantity'],
-                    'price' => $product->price,
-                ]);
-
-                $totalPrice += $orderItem->subtotal;
-            }
-
-            $order->update(['price' => $totalPrice]);
-
-            DB::commit();
-
-            return response()->json($order->load(['orderItems.product']), 201);
+            return response()->json($order, 201);
 
         } catch (\Exception $e) {
-            DB::rollBack();
-
-            return response()->json(['message' => 'Failed to create order: '.$e->getMessage()], 500);
+            return response()->json([
+                'message' => 'Failed to create order: ' . $e->getMessage()
+            ], 500);
         }
     }
 
@@ -101,9 +68,21 @@ class OrderController extends Controller
             'status' => 'required|in:pending,paid,shipped,completed,cancelled',
         ]);
 
-        $order->update($validated);
+        try {
+            $order->updateStatus($validated['status']);
 
-        return response()->json($order->load(['orderItems.product']));
+            return response()->json($order->load(['orderItems.product']));
+
+        } catch (\InvalidArgumentException $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to update order status: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -113,18 +92,23 @@ class OrderController extends Controller
     {
         $this->authorize('delete', $order);
 
-        // Only allow deletion of pending orders
-        if ($order->status !== Order::STATUS_PENDING) {
+        try {
+            $order->cancel();
+
             return response()->json([
-                'message' => 'Only pending orders can be cancelled',
+                'message' => 'Order cancelled successfully',
+            ]);
+
+        } catch (\InvalidArgumentException $e) {
+            return response()->json([
+                'message' => $e->getMessage()
             ], 400);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to cancel order: ' . $e->getMessage()
+            ], 500);
         }
-
-        $order->delete();
-
-        return response()->json([
-            'message' => 'Order cancelled successfully',
-        ]);
     }
 
     /**
@@ -142,23 +126,15 @@ class OrderController extends Controller
     {
         $this->authorize('viewAsSupplier', Order::class);
 
-        $supplierId = auth()->id();
+        try {
+            $orders = Order::getForSupplier(auth()->user());
 
-        $orders = Order::whereHas('orderItems.product', function ($query) use ($supplierId) {
-            $query->where('user_id', $supplierId);
-        })
-            ->with([
-                'user:id,name,email',
-                'orderItems' => function ($query) use ($supplierId) {
-                    $query->whereHas('product', function ($q) use ($supplierId) {
-                        $q->where('user_id', $supplierId);
-                    });
-                },
-                'orderItems.product',
-            ])
-            ->latest()
-            ->get();
+            return response()->json($orders);
 
-        return response()->json($orders);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to retrieve supplier orders: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

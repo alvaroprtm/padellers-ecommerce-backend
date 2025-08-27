@@ -15,7 +15,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('user:id,name')->latest()->get();
+        $products = Product::getAllWithSupplier();
 
         return response()->json($products);
     }
@@ -42,7 +42,7 @@ class ProductController extends Controller
             'image_url' => 'nullable|url',
         ]);
 
-        $product = auth()->user()->products()->create($validated);
+        $product = Product::createForUser(auth()->user(), $validated);
 
         return response()->json($product->load('user:id,name'), 201);
     }
@@ -85,7 +85,7 @@ class ProductController extends Controller
     {
         $this->authorize('viewOwned', Product::class);
 
-        $products = auth()->user()->products()->latest()->get();
+        $products = Product::getForSupplier(auth()->user());
 
         return response()->json($products);
     }

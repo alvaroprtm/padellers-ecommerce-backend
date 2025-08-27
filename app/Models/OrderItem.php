@@ -32,7 +32,7 @@ class OrderItem extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function getSubtotalAttribute()
+    public function getSubtotal()
     {
         return $this->price * $this->quantity;
     }

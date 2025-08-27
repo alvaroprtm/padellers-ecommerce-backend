@@ -106,7 +106,7 @@
         </div>
 
         <div class="total">
-            <p>Total Amount: ${{ number_format($order->getTotalOrders(), 2) }}</p>
+            <p>Total Amount: ${{ number_format($order->getTotalAmount(), 2) }}</p>
         </div>
 
         <p>We'll send you another email when your order ships. If you have any questions, please don't hesitate to contact us.</p>
