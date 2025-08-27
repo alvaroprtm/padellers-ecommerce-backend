@@ -44,11 +44,10 @@ class RolesAndPermissionsSeeder extends Seeder
         $roleInstances['admin']->givePermissionTo(Permission::all());
 
         $roleInstances['supplier']->givePermissionTo([
-            'product.view',
+            'product.order.view',
             'product.create',
             'product.edit',
             'product.delete',
-            'product.order.view',
             'order.edit'
         ]);
 

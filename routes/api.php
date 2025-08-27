@@ -51,7 +51,6 @@ Route::prefix('orders')->group(function () {
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/', [OrderController::class, 'index']);
         Route::post('/', [OrderController::class, 'store']);
-        Route::get('/{order}', [OrderController::class, 'show']);
         Route::patch('/{order}', [OrderController::class, 'update']);
         Route::delete('/{order}', [OrderController::class, 'destroy']);
     });

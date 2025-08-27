@@ -107,6 +107,27 @@ class OrderController extends Controller
     }
 
     /**
+     * Delete/Cancel order
+     */
+    public function destroy(Order $order)
+    {
+        $this->authorize('delete', $order);
+
+        // Only allow deletion of pending orders
+        if ($order->status !== Order::STATUS_PENDING) {
+            return response()->json([
+                'message' => 'Only pending orders can be cancelled'
+            ], 400);
+        }
+
+        $order->delete();
+
+        return response()->json([
+            'message' => 'Order cancelled successfully'
+        ]);
+    }
+
+    /**
      * Get user orders (alias for index)
      */
     public function userOrders()
