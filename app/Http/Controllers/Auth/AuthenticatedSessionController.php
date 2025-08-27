@@ -25,6 +25,7 @@ class AuthenticatedSessionController extends Controller
             'token' => $user->createToken('API Token')->plainTextToken,
             'user' => $user,
             'roles' => $user->getRoleNames(),
+            'permissions' => $user->getAllPermissions()->pluck('name'),
         ], 200);
     }
 

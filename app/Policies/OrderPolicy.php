@@ -47,8 +47,11 @@ class OrderPolicy
      */
     public function update(User $user, Order $order): bool
     {
-        if ($order->user_id === $user->id) {
-            return $user->can('order.edit');
+        if ($user->hasRole('supplier')) {
+            return $order->orderItems()
+                ->whereHas('product', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })->exists();
         }
 
         // Admins can update any order
@@ -64,7 +67,6 @@ class OrderPolicy
             return $user->can('order.delete');
         }
 
-        // Admins can delete any order
         return $user->hasRole('admin') && $user->can('order.delete');
     }
 
