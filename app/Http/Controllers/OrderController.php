@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Product;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class OrderController extends Controller
 {
@@ -46,7 +46,7 @@ class OrderController extends Controller
             // Create the order
             $order = auth()->user()->orders()->create([
                 'status' => Order::STATUS_PENDING,
-                'price' => 0, 
+                'price' => 0,
             ]);
 
             $totalPrice = 0;
@@ -116,14 +116,14 @@ class OrderController extends Controller
         // Only allow deletion of pending orders
         if ($order->status !== Order::STATUS_PENDING) {
             return response()->json([
-                'message' => 'Only pending orders can be cancelled'
+                'message' => 'Only pending orders can be cancelled',
             ], 400);
         }
 
         $order->delete();
 
         return response()->json([
-            'message' => 'Order cancelled successfully'
+            'message' => 'Order cancelled successfully',
         ]);
     }
 
@@ -148,7 +148,7 @@ class OrderController extends Controller
             $query->where('user_id', $supplierId);
         })
             ->with([
-                'user:id,name,email', 
+                'user:id,name,email',
                 'orderItems' => function ($query) use ($supplierId) {
                     $query->whereHas('product', function ($q) use ($supplierId) {
                         $q->where('user_id', $supplierId);

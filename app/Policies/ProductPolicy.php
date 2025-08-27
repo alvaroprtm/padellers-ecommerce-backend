@@ -36,7 +36,7 @@ class ProductPolicy
      */
     public function update(User $user, Product $product): bool
     {
-        return $product->user_id === $user->id || 
+        return $product->user_id === $user->id ||
                ($user->can('product.edit') && $user->hasRole('admin'));
     }
 
@@ -45,7 +45,7 @@ class ProductPolicy
      */
     public function delete(User $user, Product $product): bool
     {
-        return $product->user_id === $user->id || 
+        return $product->user_id === $user->id ||
                ($user->can('product.delete') && $user->hasRole('admin'));
     }
 
@@ -54,6 +54,6 @@ class ProductPolicy
      */
     public function viewOwned(User $user): bool
     {
-        return $user->can('product.create'); 
+        return $user->can('product.create');
     }
 }

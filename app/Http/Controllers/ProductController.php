@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -16,6 +16,7 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::with('user:id,name')->latest()->get();
+
         return response()->json($products);
     }
 
@@ -42,6 +43,7 @@ class ProductController extends Controller
         ]);
 
         $product = auth()->user()->products()->create($validated);
+
         return response()->json($product->load('user:id,name'), 201);
     }
 
@@ -60,6 +62,7 @@ class ProductController extends Controller
         ]);
 
         $product->update($validated);
+
         return response()->json($product->load('user:id,name'));
     }
 
@@ -71,6 +74,7 @@ class ProductController extends Controller
         $this->authorize('delete', $product);
 
         $product->delete();
+
         return response()->json(['message' => 'Product deleted successfully']);
     }
 
@@ -82,6 +86,7 @@ class ProductController extends Controller
         $this->authorize('viewOwned', Product::class);
 
         $products = auth()->user()->products()->latest()->get();
+
         return response()->json($products);
     }
 }
