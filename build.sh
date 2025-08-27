@@ -5,16 +5,6 @@ echo "🚀 Building Padellers API for production..."
 # Install dependencies
 composer install --no-dev --optimize-autoloader --no-interaction
 
-# Create SQLite database if it doesn't exist
-mkdir -p database
-if [ ! -f database/database.sqlite ]; then
-    touch database/database.sqlite
-fi
-
-# Set proper permissions
-chmod 664 database/database.sqlite
-chmod 775 database/
-
 # Generate application key if not set
 if [ -z "$APP_KEY" ] || [ "$APP_KEY" = "" ]; then
     php artisan key:generate --force
@@ -24,6 +14,10 @@ fi
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
+
+# Wait for database to be ready (PostgreSQL)
+echo "⏳ Waiting for database..."
+sleep 10
 
 # Run database migrations
 php artisan migrate --force
