@@ -13,10 +13,15 @@ services:
     repo: alvaroprtm/padellers-ecommerce-backend
     branch: main
   
+<<<<<<< HEAD
   build_command: chmod +x build.sh && ./build.sh
   run_command: php artisan serve --host=0.0.0.0 --port=8080
   
   environment_slug: php
+=======
+  dockerfile_path: Dockerfile
+  
+>>>>>>> 74bf878 (Fix SQLite setup for DigitalOcean App Platform)
   instance_count: 1
   instance_size_slug: basic-xxs
   
@@ -34,11 +39,17 @@ services:
   - key: DB_PORT
     value: ${padellers-db.PORT}
   - key: DB_DATABASE
+<<<<<<< HEAD
     value: ${padellers-db.DATABASE}
   - key: DB_USERNAME
     value: ${padellers-db.USERNAME}
   - key: DB_PASSWORD
     value: ${padellers-db.PASSWORD}
+=======
+    value: /app/database/database.sqlite
+  - key: DB_FOREIGN_KEYS
+    value: "true"
+>>>>>>> 74bf878 (Fix SQLite setup for DigitalOcean App Platform)
   - key: CACHE_DRIVER
     value: file
   - key: SESSION_DRIVER
