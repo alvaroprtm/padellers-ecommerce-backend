@@ -41,6 +41,8 @@ class ProductResource extends Resource
             ]);
     }
 
+    //filament panel
+
     public static function table(Table $table): Table
     {
         return $table
