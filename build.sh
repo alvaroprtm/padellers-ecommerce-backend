@@ -11,20 +11,6 @@ fi
 # Install dependencies
 composer install --no-dev --optimize-autoloader --no-interaction
 
-<<<<<<< HEAD
-=======
-# Create SQLite database if it doesn't exist
-mkdir -p database
-if [ ! -f database/database.sqlite ]; then
-    echo "🗄️ Creating SQLite database..."
-    touch database/database.sqlite
-fi
-
-# Set proper permissions
-chmod 664 database/database.sqlite
-chmod 775 database/
-
->>>>>>> 74bf878 (Fix SQLite setup for DigitalOcean App Platform)
 # Generate application key if not set
 if [ -z "$APP_KEY" ] || [ "$APP_KEY" = "" ]; then
     echo "🔑 Generating application key..."

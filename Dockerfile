@@ -18,8 +18,8 @@ RUN apt-get update && apt-get install -y \
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
-WORKDIR /app
+# Set working directory to match DigitalOcean App Platform
+WORKDIR /workspace
 
 # Copy application files
 COPY . .
@@ -27,10 +27,13 @@ COPY . .
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Create database and set permissions
-RUN mkdir -p database \
+# Create required directories and database file
+RUN mkdir -p database storage/logs storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
     && touch database/database.sqlite \
-    && chmod 664 database/database.sqlite
+    && chmod 664 database/database.sqlite \
+    && chmod 775 database/ \
+    && chmod -R 775 storage \
+    && chmod -R 775 bootstrap/cache
 
 # Generate application key
 RUN php artisan key:generate --force
