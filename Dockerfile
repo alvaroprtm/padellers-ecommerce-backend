@@ -18,15 +18,7 @@ RUN docker-php-ext-install \
     pdo \
     pdo_mysql \
     intl \
-    zip \
-    && docker-php-ext-enable \
-    pdo \
-    pdo_mysql \
-    intl \
     zip
-
-# Verify extensions are installed
-RUN php -m | grep -E "(intl|zip|pdo_mysql)"
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -34,14 +26,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /workspace
 
-# Copy composer files first for better caching
-COPY composer.json composer.lock ./
+# Copy all application files first
+COPY . .
 
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
-
-# Copy application files
-COPY . .
 
 # Create required directories and set permissions
 RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
