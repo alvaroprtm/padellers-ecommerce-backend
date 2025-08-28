@@ -1,4 +1,15 @@
 name: padellers-api
+
+# Database configuration
+databases:
+- name: padellers-mysql
+  engine: MYSQL
+  version: "8"
+  size: basic
+  num_nodes: 1
+  production: false
+
+# Services configuration
 services:
 - name: api
   source_dir: /
@@ -11,33 +22,88 @@ services:
   instance_count: 1
   instance_size_slug: basic-xxs
   
+  # Environment variables
   envs:
   - key: APP_NAME
     value: "Padellers API"
   - key: APP_ENV
     value: production
   - key: APP_DEBUG
-    value: "true"
+    value: "false"
+  - key: APP_URL
+    value: "https://padellers-api-<your-app-id>.ondigitalocean.app"
+  
+  # Database configuration
   - key: DB_CONNECTION
-    value: sqlite
+    value: mysql
+  - key: DB_HOST
+    value: "${padellers-mysql.HOSTNAME}"
+  - key: DB_PORT
+    value: "${padellers-mysql.PORT}"
   - key: DB_DATABASE
-    value: /workspace/database/database.sqlite
-  - key: DB_FOREIGN_KEYS
-    value: "true"
+    value: "${padellers-mysql.DATABASE}"
+  - key: DB_USERNAME
+    value: "${padellers-mysql.USERNAME}"
+  - key: DB_PASSWORD
+    value: "${padellers-mysql.PASSWORD}"
+  - key: DATABASE_URL
+    value: "${padellers-mysql.DATABASE_URL}"
+  
+  # Cache and session configuration
   - key: CACHE_DRIVER
     value: file
   - key: SESSION_DRIVER
     value: file
+  - key: SESSION_LIFETIME
+    value: "120"
+  
+  # Queue configuration
   - key: QUEUE_CONNECTION
     value: database
+  
+  # Logging configuration
+  - key: LOG_CHANNEL
+    value: stack
   - key: LOG_LEVEL
-    value: debug
+    value: info
+  
+  # Mail configuration
   - key: MAIL_MAILER
     value: log
   - key: MAIL_FROM_ADDRESS
     value: "noreply@padellers.com"
   - key: MAIL_FROM_NAME
     value: "Padellers"
-    
+  
+  # Security configuration
+  - key: BCRYPT_ROUNDS
+    value: "12"
+  
+  # CORS configuration (if needed for frontend)
+  - key: SANCTUM_STATEFUL_DOMAINS
+    value: "localhost,127.0.0.1,padellers.com,*.padellers.com"
+  
+  # Additional Laravel configurations
+  - key: TELESCOPE_ENABLED
+    value: "false"
+  - key: DEBUGBAR_ENABLED
+    value: "false"
+  
+  # Health check configuration
+  health_check:
+    http_path: /api/health
+    initial_delay_seconds: 60
+    period_seconds: 10
+    timeout_seconds: 5
+    success_threshold: 1
+    failure_threshold: 3
+  
+  # HTTP configuration
+  http_port: 8080
+  
+  # Routes configuration
   routes:
   - path: /
+  
+  # Resource allocation
+  run_command: "php artisan serve --host=0.0.0.0 --port=8080"

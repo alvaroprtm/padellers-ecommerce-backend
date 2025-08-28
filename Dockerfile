@@ -1,24 +1,22 @@
 FROM php:8.3-cli
 
-# Install system dependencies and PHP extensions including SQLite
+# Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
-    libsqlite3-dev \
-    sqlite3 \
+    libpq-dev \
     zip \
     unzip \
     git \
     && docker-php-ext-install \
-        pdo_sqlite \
-        sqlite3 \
+        pdo \
+        pdo_pgsql \
         pdo_mysql \
-        zip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory to match DigitalOcean App Platform
+# Set working directory
 WORKDIR /workspace
 
 # Copy application files
@@ -27,22 +25,15 @@ COPY . .
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Create required directories and database file
-RUN mkdir -p database storage/logs storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
-    && touch database/database.sqlite \
-    && chmod 664 database/database.sqlite \
-    && chmod 775 database/ \
+# Create required directories
+RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
     && chmod -R 775 storage \
     && chmod -R 775 bootstrap/cache
 
 # Generate application key
 RUN php artisan key:generate --force
 
-# Run migrations and seeders
-RUN php artisan migrate --force \
-    && php artisan db:seed --force
-
-# Cache configuration
+# Cache configuration (don't run migrations in build)
 RUN php artisan config:cache \
     && php artisan route:cache \
     && php artisan view:cache
