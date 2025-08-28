@@ -30,8 +30,10 @@ services:
     value: production
   - key: APP_DEBUG
     value: "false"
+  - key: APP_KEY
+    value: "base64:GENERATED_KEY" 
   - key: APP_URL
-    value: "https://padellers-api-<your-app-id>.ondigitalocean.app"
+    value: "https://padellers-back-cdnso.ondigitalocean.app"
   
   # Database configuration
   - key: DB_CONNECTION
