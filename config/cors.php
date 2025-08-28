@@ -15,24 +15,26 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
-
-    'allowed_methods' => ['*'],
-
-    'allowed_origins' => [
-        'http://localhost:5173',
-        'http://localhost:3000',
-        'https://padellers-frontend-<your-app-id>.ondigitalocean.app', // Replace with your actual frontend URL
-    ],
-
-    'allowed_origins_patterns' => [],
-
-    'allowed_headers' => ['*'],
-
-    'exposed_headers' => [],
-
-    'max_age' => 0,
-
-    'supports_credentials' => true,
-
-];
+        'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    
+        'allowed_methods' => ['*'],
+    
+        'allowed_origins' => [
+            'http://localhost:5173',
+            'http://localhost:3000', 
+            'https://padellers-n966o.ondigitalocean.app', 
+            'https://padellers.com',  
+        ],
+    
+        'allowed_origins_patterns' => [
+            '/^https:\/\/.*\.ondigitalocean\.app$/',  // Allow all DigitalOcean app domains
+        ],
+    
+        'allowed_headers' => ['*'],
+    
+        'exposed_headers' => [],
+    
+        'max_age' => 0,
+    
+        'supports_credentials' => true,
+    ];
