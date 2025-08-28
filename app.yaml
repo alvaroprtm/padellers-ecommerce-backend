@@ -81,7 +81,7 @@ services:
   
   # CORS configuration (if needed for frontend)
   - key: SANCTUM_STATEFUL_DOMAINS
-    value: "localhost,127.0.0.1,padellers.com,*.padellers.com"
+    value: "localhost,127.0.0.1,padellers-frontend-<your-app-id>.ondigitalocean.app,*.ondigitalocean.app"
   
   # Additional Laravel configurations
   - key: TELESCOPE_ENABLED

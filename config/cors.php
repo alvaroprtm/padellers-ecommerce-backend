@@ -19,7 +19,11 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:5173'],
+    'allowed_origins' => [
+        'http://localhost:5173',
+        'http://localhost:3000',
+        'https://padellers-frontend-<your-app-id>.ondigitalocean.app', // Replace with your actual frontend URL
+    ],
 
     'allowed_origins_patterns' => [],
 
