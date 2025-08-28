@@ -46,4 +46,6 @@ CMD php artisan config:cache && \
     php artisan view:cache && \
     php artisan migrate --force && \
     php artisan db:seed --force && \
+    php artisan queue:work --daemon --tries=3 --timeout=60 & \
+    (while true; do php artisan schedule:run; sleep 60; done) & \
     php artisan serve --host=0.0.0.0 --port=8080

@@ -20,7 +20,10 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->validateCsrfTokens(except: ['api/*']);
+    })
 
+    ->withSchedule(function ($schedule) {
+        $schedule->command('queue:process-emails')->everyMinute();
     })
 
     ->withExceptions(function (Exceptions $exceptions): void {
