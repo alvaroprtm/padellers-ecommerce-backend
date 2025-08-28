@@ -30,7 +30,7 @@ WORKDIR /workspace
 COPY . .
 
 # Install dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+RUN composer install --optimize-autoloader --no-interaction --prefer-dist
 
 # Create required directories and set permissions
 RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
