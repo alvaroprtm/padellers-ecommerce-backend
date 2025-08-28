@@ -51,7 +51,7 @@ class ProductSeeder extends Seeder
                 ]
             );
 
-            if (!$supplier->hasRole('supplier')) {
+            if (! $supplier->hasRole('supplier')) {
                 $supplier->assignRole($supplierRole);
             }
 

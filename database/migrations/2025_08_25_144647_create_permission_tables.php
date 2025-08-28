@@ -55,7 +55,7 @@ return new class extends Migration
             $table->index([$columnNames['model_morph_key'], 'model_type'], 'model_has_permissions_model_id_model_type_index');
 
             $table->foreign($pivotPermission)
-                ->references('id') // permission id
+                ->references('id')
                 ->on($tableNames['permissions'])
                 ->onDelete('cascade');
             if ($teams) {
@@ -79,7 +79,7 @@ return new class extends Migration
             $table->index([$columnNames['model_morph_key'], 'model_type'], 'model_has_roles_model_id_model_type_index');
 
             $table->foreign($pivotRole)
-                ->references('id') // role id
+                ->references('id') 
                 ->on($tableNames['roles'])
                 ->onDelete('cascade');
             if ($teams) {
@@ -99,12 +99,12 @@ return new class extends Migration
             $table->unsignedBigInteger($pivotRole);
 
             $table->foreign($pivotPermission)
-                ->references('id') // permission id
+                ->references('id') 
                 ->on($tableNames['permissions'])
                 ->onDelete('cascade');
 
             $table->foreign($pivotRole)
-                ->references('id') // role id
+                ->references('id') 
                 ->on($tableNames['roles'])
                 ->onDelete('cascade');
 
