@@ -22,7 +22,7 @@ return [
         'allowed_origins' => [
             'http://localhost:5173',
             'http://localhost:3000', 
-            'https://padellers-n966o.ondigitalocean.app', 
+            'https://padellers-s3blk.ondigitalocean.app/', 
             'https://padellers.com',  
         ],
     

@@ -28,7 +28,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 // Authentication routes
-Route::middleware(['guest', 'web'])->group(function () {
+Route::middleware(['guest'])->group(function () {
     Route::post('/register', [RegisteredUserController::class, 'store'])->name('register');
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');
 });
