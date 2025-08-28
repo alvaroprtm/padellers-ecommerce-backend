@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Orders\StoreOrderRequest;
+use App\Http\Requests\Orders\UpdateOrderRequest;
 use App\Models\Order;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -25,18 +26,10 @@ class OrderController extends Controller
     /**
      * Create a new order from cart items
      */
-    public function store(Request $request)
+    public function store(StoreOrderRequest $request)
     {
-        $this->authorize('create', Order::class);
-
-        $validated = $request->validate([
-            'items' => 'required|array|min:1',
-            'items.*.product_id' => 'required|exists:products,id',
-            'items.*.quantity' => 'required|integer|min:1',
-        ]);
-
         try {
-            $order = Order::createFromItems(auth()->user(), $validated['items']);
+            $order = Order::createFromItems(auth()->user(), $request->validated()['items']);
 
             return response()->json($order, 201);
 
@@ -60,16 +53,10 @@ class OrderController extends Controller
     /**
      * Update order status
      */
-    public function update(Request $request, Order $order)
+    public function update(UpdateOrderRequest $request, Order $order)
     {
-        $this->authorize('update', $order);
-
-        $validated = $request->validate([
-            'status' => 'required|in:pending,paid,shipped,completed,cancelled',
-        ]);
-
         try {
-            $order->updateStatus($validated['status']);
+            $order->updateStatus($request->validated()['status']);
 
             return response()->json($order->load(['orderItems.product']));
 

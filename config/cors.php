@@ -27,7 +27,7 @@ return [
     ],
 
     'allowed_origins_patterns' => [
-        '/^https:\/\/.*\.ondigitalocean\.app$/',  
+        '/^https:\/\/.*\.ondigitalocean\.app$/',
     ],
 
     'allowed_headers' => ['*'],

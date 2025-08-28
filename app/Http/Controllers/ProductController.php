@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Products\StoreProductRequest;
+use App\Http\Requests\Products\UpdateProductRequest;
 use App\Models\Product;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -31,18 +32,9 @@ class ProductController extends Controller
     /**
      * Store a new product (for authenticated users with permission)
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $this->authorize('create', Product::class);
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'image_url' => 'nullable|url',
-        ]);
-
-        $product = Product::createForUser(auth()->user(), $validated);
+        $product = Product::createForUser(auth()->user(), $request->validated());
 
         return response()->json($product->load('user:id,name'), 201);
     }
@@ -50,18 +42,9 @@ class ProductController extends Controller
     /**
      * Update product (check ownership OR edit permission)
      */
-    public function update(Request $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-        $this->authorize('update', $product);
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'image_url' => 'nullable|url',
-        ]);
-
-        $product->update($validated);
+        $product->update($request->validated());
 
         return response()->json($product->load('user:id,name'));
     }
