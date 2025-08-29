@@ -6,6 +6,7 @@ use App\Http\Requests\Products\StoreProductRequest;
 use App\Http\Requests\Products\UpdateProductRequest;
 use App\Models\Product;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\JsonResponse;
 
 class ProductController extends Controller
 {
@@ -14,7 +15,7 @@ class ProductController extends Controller
     /**
      * Display a listing of products
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $products = Product::getAllWithSupplier();
 
@@ -24,7 +25,7 @@ class ProductController extends Controller
     /**
      * Display the specified product
      */
-    public function show(Product $product)
+    public function show(Product $product): JsonResponse
     {
         return response()->json($product->load('user:id,name'));
     }
@@ -32,7 +33,7 @@ class ProductController extends Controller
     /**
      * Store a new product (for authenticated users with permission)
      */
-    public function store(StoreProductRequest $request)
+    public function store(StoreProductRequest $request): JsonResponse
     {
         $product = Product::createForUser(auth()->user(), $request->validated());
 
@@ -42,7 +43,7 @@ class ProductController extends Controller
     /**
      * Update product (check ownership OR edit permission)
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product): JsonResponse
     {
         $product->update($request->validated());
 
@@ -52,7 +53,7 @@ class ProductController extends Controller
     /**
      * Delete product (check ownership OR delete permission)
      */
-    public function destroy(Product $product)
+    public function destroy(Product $product): JsonResponse
     {
         $this->authorize('delete', $product);
 
@@ -64,7 +65,7 @@ class ProductController extends Controller
     /**
      * Get products for authenticated user
      */
-    public function supplierProducts()
+    public function supplierProducts(): JsonResponse
     {
         $this->authorize('viewOwned', Product::class);
 

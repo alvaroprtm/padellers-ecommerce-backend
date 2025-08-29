@@ -6,6 +6,7 @@ use App\Http\Requests\Orders\StoreOrderRequest;
 use App\Http\Requests\Orders\UpdateOrderRequest;
 use App\Models\Order;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\JsonResponse;
 
 class OrderController extends Controller
 {
@@ -26,7 +27,7 @@ class OrderController extends Controller
     /**
      * Create a new order from cart items
      */
-    public function store(StoreOrderRequest $request)
+    public function store(StoreOrderRequest $request): JsonResponse
     {
         try {
             $order = Order::createFromItems(auth()->user(), $request->validated()['items']);
@@ -43,7 +44,7 @@ class OrderController extends Controller
     /**
      * Get specific order
      */
-    public function show(Order $order)
+    public function show(Order $order): JsonResponse
     {
         $this->authorize('view', $order);
 
@@ -53,7 +54,7 @@ class OrderController extends Controller
     /**
      * Update order status
      */
-    public function update(UpdateOrderRequest $request, Order $order)
+    public function update(UpdateOrderRequest $request, Order $order): JsonResponse
     {
         try {
             $order->updateStatus($request->validated()['status']);
@@ -75,7 +76,7 @@ class OrderController extends Controller
     /**
      * Delete/Cancel order
      */
-    public function destroy(Order $order)
+    public function destroy(Order $order): JsonResponse
     {
         $this->authorize('delete', $order);
 
@@ -101,7 +102,7 @@ class OrderController extends Controller
     /**
      * Get user orders (alias for index)
      */
-    public function userOrders()
+    public function userOrders(): JsonResponse
     {
         return $this->index();
     }
@@ -109,7 +110,7 @@ class OrderController extends Controller
     /**
      * Get orders that contain products from the authenticated supplier
      */
-    public function supplierOrders()
+    public function supplierOrders(): JsonResponse
     {
         $this->authorize('viewAsSupplier', Order::class);
 
