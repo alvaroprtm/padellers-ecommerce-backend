@@ -9,15 +9,6 @@ use Illuminate\Support\Facades\Route;
 
 // User-related routes
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/user', function (Request $request) {
-        $user = $request->user()->load('roles');
-
-        return response()->json([
-            'user' => $user,
-            'roles' => $user->getRoleNames(),
-        ]);
-    });
-
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
         ->middleware('web')
         ->name('logout');
