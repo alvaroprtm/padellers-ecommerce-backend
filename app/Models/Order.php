@@ -72,6 +72,8 @@ class Order extends Model
                 'product_id' => $product->id,
                 'quantity' => $item['quantity'],
                 'price' => $product->price,
+                'name' => $product->name,
+                'description' => $product->description
             ]);
         }
     }
