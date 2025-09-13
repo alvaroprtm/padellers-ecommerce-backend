@@ -2,6 +2,8 @@
 
 A Laravel REST API for a multi-supplier e-commerce platform enabling suppliers to manage products and customers to shop across multiple suppliers.
 
+Front-end code: https://github.com/alvaroprtm/padellers-ecommerce-frontend 
+
 ## Tech Stack
 
 - **Laravel 12.x** with PHP 8.2+
